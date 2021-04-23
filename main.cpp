@@ -8,12 +8,18 @@ int main() {
     ifstream boardFile;
     boardFile.open("board_states.txt");
     if(boardFile.is_open()) {
-	boardFile >> line;
-	cout << line;
+	while(getline(boardFile, line)) {
+	  
+	  if(line.length() == 0) {
+	    cout << "New board" << endl << endl;
+	  } else {
+	    cout << line << endl; 
+	  }
+	}
     } else {
 	cout << "Closed";
     }
     boardFile.close();
-    cout << "Hello world" << endl;
+    
     return(0);
 }
