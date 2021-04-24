@@ -13,8 +13,10 @@ private:
 public:
 	Board();
 	Board(const Board& b);
+	Board(map<string, char>);
 	Board& operator=(const Board& b);
 	map<string, char> getGameBoard();
+	void print();
 	void setGameBoard(map<string, char> board);
 
 };
@@ -23,34 +25,49 @@ Board::Board() {
 	cout << "default" << endl;
 }
 
-Board::Board(const Board& b) {
-	cout << "Copy" << endl;
+Board::Board(map<string, char> b) {
+	game = b;
+}
 
+Board::Board(const Board& b) {
+	game = b.game;
+
+}
+
+void Board::print() {
+	for(auto b : game) {
+		cout << b.first << " : " << b.second << endl;
+	}
 }
 
 Board& Board::operator=(const Board& b) {
 	if( this != &b) {
-		cout << "Assignment" << endl;
+		game = b.game;
 	}
 	return *this;
+}
+
+map<string, char> Board::getGameBoard() {
+	return game;
 }
 
 int main() {
     string line;
     map<string, char> boardGame;    
-   // Board boards[4];
+    Board boards[4];
     int count = 0;
     int rank = 8; // to store the row name in the key for the map
     char file[8] = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'}; // to store the column name in the key for the boardGame map
     map<string, char>::iterator it = boardGame.begin();
     ifstream boardFile;
+    ifstream moveFile ("move_sets.txt");
     boardFile.open("board_states.txt");
     if(boardFile.is_open()) {
 	while(getline(boardFile, line)) {
        	  
 	  if(line.length() == 0) {
-	    Board test;
-	   // boards[count] = boardGame;
+	    Board tmp(boardGame);
+	    boards[count] = tmp;
 	    ++count;
 	    cout << count << endl;
             cout << "---------------------------- NEW BOARD ------------------------" << endl;
@@ -69,12 +86,24 @@ int main() {
 	  }
 	} // end while loop
 
-
+	cout << "Line ended" << endl;
     } else {
 	cout << "Closed";
     }
-    
-    boardFile.close();
-    
+    cout << "See me" << endl;
+    //moveFile.open("move_sets.txt");
+    string moves;
+    if(moveFile.is_open()) {
+	cout << "Open" << endl;
+	while(getline(moveFile, moves)) {
+	  cout << moves;
+	  cout << endl;
+	}
+    } else {
+	cout << "Closed";
+    }
+
+	    
     return(0);
 }
+
