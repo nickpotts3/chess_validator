@@ -1,9 +1,39 @@
 #include <iostream>
 #include <fstream>
 #include <map>
-#include "board.h"
+//#include "board.h"
 using namespace std;
 
+
+class Board {
+
+private:
+	map<string, char> game;
+
+public:
+	Board();
+	Board(const Board& b);
+	Board& operator=(const Board& b);
+	map<string, char> getGameBoard();
+	void setGameBoard(map<string, char> board);
+
+};
+
+Board::Board() {
+	cout << "default" << endl;
+}
+
+Board::Board(const Board& b) {
+	cout << "Copy" << endl;
+
+}
+
+Board& Board::operator=(const Board& b) {
+	if( this != &b) {
+		cout << "Assignment" << endl;
+	}
+	return *this;
+}
 
 int main() {
     string line;
@@ -19,8 +49,7 @@ int main() {
 	while(getline(boardFile, line)) {
        	  
 	  if(line.length() == 0) {
-	    for(const auto& x : boardGame) {
-	    }
+	    Board test;
 	   // boards[count] = boardGame;
 	    ++count;
 	    cout << count << endl;
