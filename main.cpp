@@ -7,8 +7,8 @@ using namespace std;
 
 int main() {
     string line;
-    map<string, char> boardGame;
-    
+    map<string, char> boardGame;    
+   // Board boards[4];
     int count = 0;
     int rank = 8; // to store the row name in the key for the map
     char file[8] = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'}; // to store the column name in the key for the boardGame map
@@ -20,9 +20,8 @@ int main() {
        	  
 	  if(line.length() == 0) {
 	    for(const auto& x : boardGame) {
-	//	cout << x.first << ": " << x.second << endl;
 	    }
-	    boards[count] = boardGame;
+	   // boards[count] = boardGame;
 	    ++count;
 	    cout << count << endl;
             cout << "---------------------------- NEW BOARD ------------------------" << endl;
@@ -42,7 +41,6 @@ int main() {
 	} // end while loop
 
 
-    cout << boards.size() << endl;
     } else {
 	cout << "Closed";
     }
