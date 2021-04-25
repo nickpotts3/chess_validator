@@ -6,7 +6,8 @@ using namespace std;
 
 //enum piece {i, j, k, l, m, n, o, p, q, r, s, t, u};
 enum color {White, Black};
-
+class Piece;
+map<string, Piece*> boardGame;
 class Piece {
 public:
 	Piece() {};
@@ -14,7 +15,7 @@ public:
 	~Piece() {}
 	string currentPos;
 	string color;
-	virtual bool move(string)=0;
+	virtual string move(string)=0;
 };
 
 
@@ -24,63 +25,76 @@ Piece::Piece(const Piece& p) {
 
 class Rook : public Piece {
 public:
-	Rook() {};
-	bool move(string pos) {
-		cout << "Rook move called" << endl;
-		return true;
+	Rook() {cout << "Rook ctr called" << endl;};
+	string move(string pos) {
+		return "Rook move called";
 	}
 
 };
 
 class Pawn : public Piece {
-	bool move(string pos) {
-		return true;
+public:
+	Pawn() {cout << "Pawn ctr called" << endl;};
+	string move(string pos) {
+		return "pawn move";
 	}
 };
 
 class Bishop : public Piece {
-	bool move(string pos) {
-		return true;
+public:
+	Bishop() {cout << "Bishop ctr called" << endl;};
+	string move(string pos) {
+		return "bishop move";
 	};
 };
 
 class Knight : public Piece {
-	bool move(string pos) {
-
+public:
+	Knight() {cout << "Knight ctr called" << endl;};
+	string move(string pos) {
+		return "knight";
 	}
 
 };
 
 class King : public Piece {
-	bool move(string pos) {
-	
+public:
+	King() {cout << "king ctr called" << endl;};
+	string move(string pos) {
+		return "King";
 	}
 
 };
 
 class Queen : public Piece {
-	bool move(string pos) {
-
+public:
+	Queen() {cout << "Queen ctr called" << endl;};
+	string move(string pos) {
+		return "queen";
 	}
 };
 
 class Empty : public Piece {
-
+public:
+	Empty(){cout << "empty ctr called" << endl;};
+	string move(string pos) {
+		return "Empty";
+	}
 };
 
 class Board {
 
 private:
-	map<string, char> game;
+	map<string, Piece*> game;
 
 public:
 	Board();
 	Board(const Board& b);
-	Board(map<string, char>);
+	Board(map<string, Piece*>);
 	Board& operator=(const Board& b);
-	map<string, char> getGameBoard();
+	map<string, Piece*> getGameBoard();
 	void print();
-	void setGameBoard(map<string, char> board);
+	void setGameBoard(map<string, Piece*> board);
 
 };
 
@@ -88,7 +102,7 @@ Board::Board() {
 	cout << "default" << endl;
 }
 
-Board::Board(map<string, char> b) {
+Board::Board(map<string, Piece*> b) {
 	game = b;
 }
 
@@ -110,43 +124,59 @@ Board& Board::operator=(const Board& b) {
 	return *this;
 }
 
-map<string, char> Board::getGameBoard() {
+map<string, Piece*> Board::getGameBoard() {
 	return game;
 }
 
 
-string determinePiece(char piece, string pos) {
+pair<string,Piece*> makePair(Piece *piece, string pos) {
+	return pair<string, Piece*> (pos, piece);
+}
+void determinePiece(char piece, string pos) {
 //	auto chessP;
-//	cout << "entered determinePiece at pos: " << pos << endl; 
+	cout << "entered determinePiece at pos: " << pos << endl; 
 	if(piece == 'p' || piece == 'i') {
-		return "Rook";
-//		Rook r;
-//		return r;
+		Rook r;
+		boardGame.insert (makePair(&r , pos));
 	} else if (piece == 'j' || piece == 'q') {
-		return "knight";
+		Knight k;
+		boardGame.insert( makePair(&k, pos));
+//		return "knight";
 	} else if (piece == 'k' || piece == 'r') {
-		return "Bishop";
+		Bishop b;
+		boardGame.insert(makePair(&b, pos));
+//		return "Bishop";
 	} else if (piece == 'l' || piece == 's') {
-		return "Queen";
+		Queen q;
+		boardGame.insert(makePair(&q, pos));
+//		return "Queen";
 	} else if (piece == 'm' || piece == 't') {
-		return "King";
+		King kg;
+		boardGame.insert(makePair(&kg, pos));
+//		return "King";
 	} else if (piece == 'o' || piece == 'u') {
-		return "pawn";
+//		cout << "Found pawn" << endl;
+		Pawn p;
+		boardGame.insert(makePair(&p, pos));
+//		return "pawn";
 	} else {
-		return "piece";
+		Empty e;
+//		boardGame.insert(makePair(&e, pos));
+//		return "piece";
 	}	
 }
 
+//map<string, char> boardGame;
 int main() {
-    Rook r;
-    cout << r.move("foo");   
+//    Rook r;
+  //  cout << r.move("foo");   
     string line;
-    map<string, char> boardGame;    
+   // map<string, char> boardGame;    
     Board boards[4];
     int count = 0;
     int rank = 8; // to store the row name in the key for the map
     char file[8] = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'}; // to store the column name in the key for the boardGame map
-    map<string, char>::iterator it = boardGame.begin();
+//    map<string, char>::iterator it = boardGame.begin();
     ifstream boardFile;
     ifstream moveFile ("move_sets.txt");
     boardFile.open("board_states.txt");
@@ -157,20 +187,22 @@ int main() {
 	    Board tmp(boardGame);
 	    boards[count] = tmp;
 	    ++count;
-	    cout << count << endl;
-            cout << "---------------------------- NEW BOARD ------------------------" << endl;
+//	    cout << count << endl;
+  //          cout << "---------------------------- NEW BOARD ------------------------" << endl;
             rank = 8;
             boardGame.clear(); 
 	  } else {
 	    for(int i = 0; i < line.length(); i++) {
                 string pos = file[i] + to_string(rank);
-		cout << determinePiece(line[i], pos);
+		determinePiece(line[i], pos);
                 pair<string, char> location (pos, line[i]);
-		boardGame.insert(location);
+//		boardGame.insert(location);
 	    }
 	    --rank;
 	    if(rank < 0) {rank = 8;}
-	     
+	    for(auto it = boardGame.cbegin(); it != boardGame.cend(); ++it) {
+		cout << (*it).first << " " << (*(*it).second).move("foo");
+	    }
 	  }
 	} // end while loop
 
@@ -180,6 +212,9 @@ int main() {
     }
     cout << "See me" << endl;
     //moveFile.open("move_sets.txt");
+//    for( auto it = boardGame.cbegin(); it != boardGame.cend(); ++it) {
+//	cout << (*it).first << " : " << (*it).second.move() << endl;
+  //  }
     string moves;
     if(moveFile.is_open()) {
 	cout << "Open" << endl;
@@ -194,4 +229,3 @@ int main() {
 	    
     return(0);
 }
-
